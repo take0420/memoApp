@@ -9,12 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // メモをローカルストレージから取得
   const loadMemo = () => {
     text.value = localStorage.getItem('memo') || '';
+    updateButtonState();
   };
 
   // メモを保存する
   const saveMemo = () => {
     localStorage.setItem('memo', text.value);
     showMessage('保存しました');
+    updateButtonState();
   };
 
   // メモを削除する
@@ -22,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (confirm('本当に削除しますか？')) {
       text.value = '';
       localStorage.removeItem('memo');
+      updateButtonState();
     }
   };
 
@@ -34,9 +37,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1000);
   };
 
+  // ボタンの状態を更新する
+  const updateButtonState = () => {
+    const isTextEmpty = text.value.trim() === '';
+    saveButton.disabled = isTextEmpty;
+    clearButton.disabled = isTextEmpty;
+  };
+
   // イベントリスナーを設定
   saveButton.addEventListener('click', saveMemo);
   clearButton.addEventListener('click', clearMemo);
+  text.addEventListener('input', updateButtonState);
 
   // 初期化
   loadMemo();
